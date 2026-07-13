@@ -1005,8 +1005,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             });
             if (!response.ok) throw new Error("Error al borrar ventas en el servidor.");
             
-            // CLEAR LOCAL
-            clearSalesData();
+            // Trigger refresh to update local state from server
+            if (onRefreshData) {
+                await onRefreshData();
+            }
         } catch (err: any) {
             setAlertModal({ isOpen: true, title: "Error", message: err.message });
         }

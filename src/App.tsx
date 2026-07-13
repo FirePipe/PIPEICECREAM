@@ -1533,9 +1533,13 @@ export default function App() {
             </motion.div>
             <div>
               <div className="flex items-center gap-1">
-                <h1 className="font-sans text-sm sm:text-base font-black tracking-widest text-gray-900 dark:text-white uppercase leading-none">
+                <motion.h1 
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="font-sans text-sm sm:text-base font-black tracking-widest text-gray-900 dark:text-white uppercase leading-none"
+                >
                   PIPE <span className="font-medium text-[9px] sm:text-[11px] tracking-wider text-gray-400 dark:text-zinc-500 ml-0.5">ICE CREAM</span>
-                </h1>
+                </motion.h1>
               </div>
               {isAdminMode ? (
                 <span className="text-[7px] sm:text-[8px] text-brand-600 dark:text-brand-400 font-bold tracking-widest uppercase block mt-0.5 sm:mt-1 animate-pulse">
@@ -1737,36 +1741,36 @@ export default function App() {
                 <span>💬 Atención Directa</span>
               </motion.div>
             </motion.div>
- 
+
             {/* Minimalist Search & Filter Panel (Solid 100% Opaque Block) */}
             <motion.div 
-              className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-[#121212] p-3 sm:p-4 rounded-2xl border border-gray-100 dark:border-zinc-800/80 shadow-sm"
+              className="mb-4 flex flex-col gap-1 bg-white dark:bg-[#121212] p-1.5 rounded-2xl border border-gray-100 dark:border-zinc-800/80 shadow-sm"
               variants={searchVariants}
             >
               {/* Search input */}
-              <div className="w-full md:w-96 relative">
+              <div className="w-full relative">
                 <input
                   type="text"
                   placeholder="Buscar sabor..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-4 pr-16 py-3 sm:py-2.5 rounded-xl border border-gray-200 dark:border-zinc-850 bg-gray-50 dark:bg-zinc-950 text-sm sm:text-xs outline-none focus:border-brand-500 dark:focus:border-brand-500 transition-all dark:text-white"
+                  className="w-full pl-4 pr-16 py-2 rounded-xl border border-gray-200 dark:border-zinc-850 bg-gray-50 dark:bg-zinc-950 text-sm outline-none focus:border-brand-500 dark:focus:border-brand-500 transition-all dark:text-white"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 hover:text-gray-600 font-bold uppercase tracking-wide px-2 py-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-gray-400 hover:text-gray-600 font-bold uppercase tracking-wide px-2 py-1"
                   >
                     Borrar
                   </button>
                 )}
               </div>
- 
+  
               {/* Filter Chips & Tutorial Button */}
-              <div className="flex flex-wrap gap-1 sm:gap-2 w-full md:w-auto justify-start md:justify-end items-center overflow-x-auto no-scrollbar pb-1 md:pb-0">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2">
                 <button
                   onClick={() => setFilterType("todos")}
-                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap text-center ${
                     filterType === "todos"
                       ? "bg-brand-600 text-white shadow-sm"
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-750"
@@ -1776,7 +1780,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setFilterType("disponibles")}
-                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap text-center ${
                     filterType === "disponibles"
                       ? "bg-brand-600 text-white shadow-sm"
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-750"
@@ -1786,7 +1790,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setFilterType("agotados")}
-                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap text-center ${
                     filterType === "agotados"
                       ? "bg-brand-600 text-white shadow-sm"
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-750"
@@ -1806,7 +1810,7 @@ export default function App() {
                   title="¿Cómo realizar un pedido?"
                 >
                   <HelpCircle className="h-4 w-4 text-sky-500" />
-                  <span className="hidden sm:inline sm:ml-1.5">Guía</span>
+                  <span className="ml-1.5">Guía</span>
                 </button>
               </div>
             </motion.div>

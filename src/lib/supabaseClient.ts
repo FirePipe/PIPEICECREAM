@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 let supabaseInstance: SupabaseClient | null = null;
+let currentUrl: string | null = null;
+let currentKey: string | null = null;
 
 const isValidSupabaseUrl = (url: any): boolean => {
   if (!url || typeof url !== "string") return false;
@@ -16,13 +18,20 @@ const isValidSupabaseKey = (key: any): boolean => {
 };
 
 export const getSupabaseClient = (url?: string, anonKey?: string): SupabaseClient | null => {
-  // 1. If explicit keys are provided, we re-initialize the client
+  // 1. If explicit keys are provided
   if (url && anonKey && isValidSupabaseUrl(url) && isValidSupabaseKey(anonKey)) {
+    const normalizedUrl = url.trim().replace(/\/$/, "").replace(/\/rest\/v1$/, "");
+    const normalizedKey = anonKey.trim();
+
+    // Check if we already have this client
+    if (supabaseInstance && normalizedUrl === currentUrl && normalizedKey === currentKey) {
+      return supabaseInstance;
+    }
+
     try {
-      supabaseInstance = createClient(
-        url.trim().replace(/\/$/, "").replace(/\/rest\/v1$/, ""),
-        anonKey.trim()
-      );
+      supabaseInstance = createClient(normalizedUrl, normalizedKey);
+      currentUrl = normalizedUrl;
+      currentKey = normalizedKey;
       return supabaseInstance;
     } catch (e) {
       console.error("[Supabase] Failed to create custom client:", e);
@@ -44,10 +53,11 @@ export const getSupabaseClient = (url?: string, anonKey?: string): SupabaseClien
 
   if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
     try {
-      supabaseInstance = createClient(
-        supabaseUrl.trim().replace(/\/$/, "").replace(/\/rest\/v1$/, ""),
-        supabaseAnonKey.trim()
-      );
+      const normalizedUrl = supabaseUrl.trim().replace(/\/$/, "").replace(/\/rest\/v1$/, "");
+      const normalizedKey = supabaseAnonKey.trim();
+      supabaseInstance = createClient(normalizedUrl, normalizedKey);
+      currentUrl = normalizedUrl;
+      currentKey = normalizedKey;
     } catch (e) {
       console.error("[Supabase] Failed to create default client:", e);
       supabaseInstance = null;

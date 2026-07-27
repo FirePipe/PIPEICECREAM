@@ -45,8 +45,17 @@ CREATE TABLE shop_config (
     catalog_sort_order TEXT DEFAULT 'manual', -- 'manual', 'stock_desc', 'stock_asc', 'alphabetical'
     catalog_mode_enabled BOOLEAN DEFAULT false,
     catalog_mode_message TEXT DEFAULT 'SABORIFICACIÓN EN MANTENIMIENTO (SÓLO CATÁLOGO)\nSincronización pausada por el Administrador.',
+    hide_out_of_stock BOOLEAN DEFAULT false,
+    has_seen_tutorial BOOLEAN DEFAULT false,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migraciones automáticas (Garantizan la adición de campos si la tabla ya existía previamente)
+ALTER TABLE shop_config ADD COLUMN IF NOT EXISTS hide_out_of_stock BOOLEAN DEFAULT false;
+ALTER TABLE shop_config ADD COLUMN IF NOT EXISTS has_seen_tutorial BOOLEAN DEFAULT false;
+ALTER TABLE shop_config ADD COLUMN IF NOT EXISTS catalog_sort_order TEXT DEFAULT 'manual';
+ALTER TABLE shop_config ADD COLUMN IF NOT EXISTS catalog_mode_enabled BOOLEAN DEFAULT false;
+ALTER TABLE shop_config ADD COLUMN IF NOT EXISTS catalog_mode_message TEXT DEFAULT 'SABORIFICACIÓN EN MANTENIMIENTO (SÓLO CATÁLOGO)\nSincronización pausada por el Administrador.';
 
 -- Tabla: Inventario de Sabores (Helados y paletas)
 CREATE TABLE products (

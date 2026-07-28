@@ -1,0 +1,6 @@
+{
+  "name": "Catálogo y Administración de Paletas",
+  "description": "Catálogo dinámico de paletas y helados con panel de administración para inventario, aprobación de ventas, estadísticas y un asistente de IA integrado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

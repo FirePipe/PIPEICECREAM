@@ -13,21 +13,19 @@ export default defineConfig(() => {
     },
     build: {
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 800,
+      chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('motion')) {
-                return 'vendor-core';
-              }
+              // Group recharts and d3 into a separate chunk since they are very heavy
+              // and only loaded for the Admin Dashboard statistics.
               if (id.includes('recharts') || id.includes('d3')) {
                 return 'vendor-charts';
               }
-              if (id.includes('lucide-react')) {
-                return 'vendor-icons';
-              }
-              return 'vendor-libs';
+              // We let react, motion, and lucide-react be tree-shaken and bundled
+              // optimally by Vite. This avoids bundling all of lucide-react (thousands of icons)
+              // and prevents potential chunk cyclic load issues that result in blank pages on Vercel.
             }
           }
         }

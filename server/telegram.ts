@@ -1,7 +1,8 @@
 import { Bot, InputFile } from 'grammy'; 
 import { getFullDb } from "./db";
 
-const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN || '');
+const botToken = process.env.TELEGRAM_BOT_TOKEN;
+const bot = botToken ? new Bot(botToken) : null;
 
 const pendingReceiptRequests: string[] = [];
 export function getPendingReceipts() { return pendingReceiptRequests; }
@@ -21,6 +22,11 @@ function formatNumber(val: number): string {
 // 3. Controlador principal optimizado sin dependencias de Puppeteer/Chromium (100% confiable y veloz)
 export async function sendTicketNotification(chatId: string, orderData: any) {
   try {
+    if (!bot) {
+      console.warn("[Telegram Bot] Bot no inicializado (TELEGRAM_BOT_TOKEN ausente). Se omite el envío del ticket.");
+      return { success: false, error: "Bot no inicializado" };
+    }
+
     const formattedItems = orderData.itemsSummary 
       ? orderData.itemsSummary.split(", ").map((item: string) => `• ${item}`).join("\n")
       : "No especificado";
@@ -69,8 +75,8 @@ export async function sendTicketNotification(chatId: string, orderData: any) {
 let botStarted = false;
 
 export function startTelegramBot() {
-  if (!process.env.TELEGRAM_BOT_TOKEN) {
-    console.warn("TELEGRAM_BOT_TOKEN no configurado. El bot de Telegram no se iniciará.");
+  if (!bot) {
+    console.warn("TELEGRAM_BOT_TOKEN no configurado o inválido. El bot de Telegram no se iniciará.");
     return;
   }
   
@@ -245,6 +251,11 @@ export async function enviarComprobanteAdmin(saleId: string): Promise<boolean> {
     // Envía la imagen del ticket
     await sendTicketNotification(chatId, orderData);
     
+    if (!bot) {
+      console.warn("[Telegram Bot] Bot no inicializado. Se omite el envío de mensaje de texto.");
+      return true;
+    }
+
     // Envía mensaje de texto estructurado adicional
     const textMsg = 
       `🚨 *NUEVO PEDIDO RECIBIDO* 🚨\n\n` +
@@ -296,6 +307,11 @@ export async function notificarCambioEstado(saleId: string, nuevoEstado: string)
       `💰 *Monto:* $ ${formatNumber(sale.total)}\n\n` +
       `La orden ha sido actualizada en el panel administrativo.`;
 
+    if (!bot) {
+      console.warn("[Telegram Bot] Bot no inicializado. Se omite la notificación de cambio de estado.");
+      return;
+    }
+
     await bot.api.sendMessage(chatId, textMsg, { parse_mode: "Markdown" });
   } catch (err) {
     console.error("[Telegram Admin] Error al notificar cambio de estado:", err);
@@ -346,6 +362,11 @@ export async function enviarTicketDigitalConImagen(saleId: string, base64Image: 
     
     const customerName = sale.clienteNombre || 'Cliente Anónimo';
     const idString = sale.id ? sale.id.replace('ORD-', '') : '000000';
+
+    if (!bot) {
+      console.warn("[Telegram Bot] Bot no inicializado. Se omite el envío de la foto del ticket.");
+      return false;
+    }
 
     console.log("[Telegram Admin] Enviando foto a Telegram, buffer size:", buffer.length);
     await bot.api.sendPhoto(chatId, new InputFile(buffer, `ticket-${idString}.png`), {
